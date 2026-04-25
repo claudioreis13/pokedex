@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex Pro - Official Font Edition</title>
+    <link href="https://fonts.cdnfonts.com/css/pokemon-solid" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Poké<span>dex</span></h1>
+        <p>Explore as 4 regiões clássicas com tecnologia animada</p>
+    </header>
+
+    <div class="filterPanel">
+        <div class="filterGroup">
+            <label for="regionSelect">Região</label>
+            <select id="regionSelect">
+                <option value="all">Todas (Gen 1-4)</option>
+                <option value="kanto">Kanto (Gen 1)</option>
+                <option value="johto">Johto (Gen 2)</option>
+                <option value="hoenn">Hoenn (Gen 3)</option>
+                <option value="sinnoh">Sinnoh (Gen 4)</option>
+            </select>
+        </div>
+        <div class="filterGroup">
+            <label for="searchInput">Busca</label>
+            <input type="text" id="searchInput" placeholder="Nome ou ID...">
+        </div>
+        <div class="filterGroup">
+            <label for="sortSelect">Ordenar</label>
+            <select id="sortSelect">
+                <option value="id">Nº Pokédex</option>
+                <option value="name">Nome</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="resultsText" class="resultsText">Carregando Pokédex...</div>
+    <main id="pokeContainer" class="pokeContainer"></main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="UI.closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
