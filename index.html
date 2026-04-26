@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex Pro - Official Font Edition</title>
+    <title>Pokédex Pro</title>
     <link href="https://fonts.cdnfonts.com/css/pokemon-solid" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,8 +11,13 @@
 <body>
 
     <header>
-        <h1>Poké<span>dex</span></h1>
-        <p>Explore as 4 regiões clássicas com tecnologia animada</p>
+        <div class="header-top">
+            <h1>Poké<span>dex</span></h1>
+            <button class="dark-toggle" id="darkToggle" aria-label="Alternar tema">
+                <span class="toggle-icon">🌙</span>
+            </button>
+        </div>
+        <p class="header-sub">Explore as 4 regiões clássicas com tecnologia animada</p>
     </header>
 
     <div class="filterPanel">
@@ -45,7 +50,26 @@
     <div id="modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="UI.closeModal()">&times;</span>
-            <div id="modalBody"></div>
+
+            <div id="modalHeader" class="modal-header"></div>
+
+            <div class="modal-tabs">
+                <button class="modal-tab-btn active" data-tab="stats" onclick="UI.switchModalTab('stats')">Status</button>
+                <button class="modal-tab-btn" data-tab="evolution" onclick="UI.switchModalTab('evolution')">Evolução</button>
+                <button class="modal-tab-btn" data-tab="moves" onclick="UI.switchModalTab('moves')">Ataques</button>
+            </div>
+
+            <div id="tab-stats" class="modal-tab-pane active">
+                <div id="modalBody"></div>
+            </div>
+
+            <div id="tab-evolution" class="modal-tab-pane">
+                <div id="evolutionContainer"></div>
+            </div>
+
+            <div id="tab-moves" class="modal-tab-pane">
+                <div id="movesContainer"></div>
+            </div>
         </div>
     </div>
 
