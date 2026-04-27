@@ -1,61 +1,152 @@
 @import url('https://fonts.cdnfonts.com/css/pokemon-solid');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
 
-/* ─── Design Tokens: Light & Dark ───────────────────────────────────────────── */
+/* ─── Tokens ─────────────────────────────────────────────────────────────────── */
 :root {
     --bg: #f0f4f8;
     --surface: #ffffff;
     --surface-2: #f8fafc;
-    --border: #f1f5f9;
+    --border: #e2e8f0;
     --text: #2d3436;
     --text-muted: #64748b;
     --accent: #3b4cca;
     --yellow: #ffcb05;
     --radius: 24px;
-    --shadow: 0 4px 6px rgba(0,0,0,0.04);
-    --shadow-hover: 0 20px 40px rgba(0,0,0,0.1);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+    --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
 
-    /* Cores dos tipos */
     --fire: #ff7675; --grass: #55efc4; --water: #74b9ff; --electric: #ffe142;
     --poison: #a29bfe; --bug: #fab1a0; --ground: #e17055; --normal: #dfe6e9;
-    --fairy: #fd79a8; --fighting: #e17055; --psychic: #a29bfe; --rock: #b2bec3;
-    --ghost: #636e72; --ice: #74b9ff; --dragon: #0984e3; --dark: #636e72;
-    --steel: #b2bec3; --flying: #81ecec;
+    --fairy: #fd79a8; --fighting: #e17055; --psychic: #eaeda1; --rock: #b2bec3;
+    --ghost: #8e9eab; --ice: #81ecec; --dragon: #74b9ff; --dark: #8e9eab;
+    --steel: #b2bec3; --flying: #a8edea;
 }
 
 [data-theme="dark"] {
     --bg: #0f172a;
     --surface: #1e293b;
-    --surface-2: #172032;
+    --surface-2: #162032;
     --border: #334155;
     --text: #f1f5f9;
     --text-muted: #94a3b8;
-    --shadow: 0 4px 6px rgba(0,0,0,0.3);
-    --shadow-hover: 0 20px 40px rgba(0,0,0,0.4);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.35);
+    --shadow-lg: 0 20px 40px rgba(0,0,0,0.45);
 }
 
-/* ─── Base ───────────────────────────────────────────────────────────────────── */
+/* ─── Reset ──────────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     background: var(--bg);
     color: var(--text);
-    padding: 40px 20px;
+    padding: 40px 20px 80px;
     font-family: 'Plus Jakarta Sans', sans-serif;
     transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ─── Splash Screen ──────────────────────────────────────────────────────────── */
+#splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#splash.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.splash-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Pokébola */
+.pokeball-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.pokeball {
+    width: 120px;
+    height: 120px;
+    animation: pokeSpin 1.2s linear infinite;
+    filter: drop-shadow(0 0 20px rgba(231,76,60,0.5));
+}
+
+@keyframes pokeSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Pulso no botão central */
+.splash-btn-inner {
+    animation: btnPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes btnPulse {
+    0%, 100% { fill: white; }
+    50%       { fill: #ffcb05; }
+}
+
+/* Título */
+.splash-title {
+    font-family: 'Pokemon Solid', sans-serif;
+    font-size: 3rem;
+    letter-spacing: 6px;
+    color: #ffcb05;
+    text-shadow: 4px 4px 0 #e74c3c;
+    -webkit-text-stroke: 1px #e74c3c;
+    animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.8; }
+}
+
+/* Barra de progresso */
+.splash-progress-wrap {
+    width: 220px;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.splash-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #e74c3c, #ffcb05);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+/* Mensagem */
+.splash-msg {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    min-height: 20px;
 }
 
 /* ─── Header ─────────────────────────────────────────────────────────────────── */
 header {
     text-align: center;
     margin-bottom: 40px;
-}
-
-.header-top {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
     position: relative;
 }
 
@@ -74,77 +165,213 @@ header h1 {
     font-size: 0.9rem;
 }
 
-/* ─── Dark Mode Toggle ───────────────────────────────────────────────────────── */
+/* Dark toggle: canto superior direito do header */
 .dark-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
     background: var(--surface);
-    border: 2px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: 50px;
     padding: 8px 14px;
     cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow);
-    position: absolute;
-    right: 0;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow-sm);
 }
 
 .dark-toggle:hover {
-    transform: rotate(20deg) scale(1.1);
-    box-shadow: var(--shadow-hover);
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: var(--shadow-md);
 }
 
-/* ─── Filter Panel ───────────────────────────────────────────────────────────── */
-.filterPanel {
-    background: var(--surface);
-    padding: 25px 40px;
-    border-radius: var(--radius);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
+/* ─── Filter Bar (Premium Redesign) ─────────────────────────────────────────── */
+.filter-bar {
     max-width: 900px;
-    margin: 0 auto 40px;
-    justify-content: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-    transition: background 0.3s ease;
-}
-
-.filterGroup {
+    margin: 0 auto 36px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    flex: 1;
-    min-width: 200px;
+    gap: 14px;
 }
 
-.filterGroup label {
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--accent);
-    text-transform: uppercase;
+/* Busca principal */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-.filterGroup input, .filterGroup select {
-    padding: 15px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
+.search-icon {
+    position: absolute;
+    left: 18px;
+    font-size: 1rem;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.search-input {
+    width: 100%;
+    padding: 16px 48px;
+    border-radius: 16px;
+    border: 2px solid var(--border);
+    background: var(--surface);
     color: var(--text);
-    font-weight: 600;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: 500;
+    outline: none;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input::placeholder { color: var(--text-muted); }
+
+.search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(59,76,202,0.1);
+}
+
+.search-clear {
+    position: absolute;
+    right: 14px;
+    background: var(--surface-2);
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+    line-height: 1;
+}
+
+.search-clear.visible { display: flex; }
+.search-clear:hover { background: var(--border); color: var(--text); }
+
+/* Linha de controles secundários */
+.filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Region chips */
+.filter-chip-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.region-chip {
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.region-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.region-chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59,76,202,0.3);
+}
+
+/* Cores por região quando ativa */
+.region-chip.kanto.active  { background: #e74c3c; border-color: #e74c3c; box-shadow: 0 4px 12px rgba(231,76,60,0.35); }
+.region-chip.johto.active  { background: #8e44ad; border-color: #8e44ad; box-shadow: 0 4px 12px rgba(142,68,173,0.35); }
+.region-chip.hoenn.active  { background: #2980b9; border-color: #2980b9; box-shadow: 0 4px 12px rgba(41,128,185,0.35); }
+.region-chip.sinnoh.active { background: #d35400; border-color: #d35400; box-shadow: 0 4px 12px rgba(211,84,0,0.35); }
+.region-chip.unova.active  { background: #1a1a2e; border-color: #1a1a2e; box-shadow: 0 4px 12px rgba(26,26,46,0.45); }
+.region-chip.kalos.active  { background: #1abc9c; border-color: #1abc9c; box-shadow: 0 4px 12px rgba(26,188,156,0.35); }
+
+/* Sort select discreto */
+.sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 14px;
+    transition: border-color 0.2s ease;
+}
+
+.sort-wrapper:focus-within { border-color: var(--accent); }
+
+.sort-icon {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.sort-select {
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 700;
     font-family: inherit;
     outline: none;
+    cursor: pointer;
+}
+
+/* Footer do filtro */
+.filter-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+}
+
+.results-count {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.clear-filters {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 50px;
+    padding: 5px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--text-muted);
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.filterGroup input:focus, .filterGroup select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(59, 76, 202, 0.1);
+.clear-filters:hover {
+    border-color: #e74c3c;
+    color: #e74c3c;
 }
 
-/* ─── Grid de Cards ──────────────────────────────────────────────────────────── */
+
+/* ─── Grid ───────────────────────────────────────────────────────────────────── */
 .pokeContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 20px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -153,31 +380,39 @@ header h1 {
 .pokemon {
     background: var(--surface);
     border-radius: var(--radius);
-    padding: 25px;
+    padding: 18px;
     text-align: center;
     cursor: pointer;
     border: 2px solid transparent;
     position: relative;
-    box-shadow: var(--shadow);
-    /* Micro-interaction: transição suave */
+    box-shadow: var(--shadow-sm);
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
                 box-shadow 0.35s ease,
-                border-color 0.3s ease;
+                border-color 0.25s ease;
+}
+
+/* tipos no card — suporte a múltiplos */
+.card-types {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 6px 0 0;
 }
 
 .pokemon:hover {
     transform: translateY(-12px) scale(1.02);
-    box-shadow: var(--shadow-hover);
+    box-shadow: var(--shadow-lg);
 }
 
-/* Micro-interaction: card entra na tela */
+/* Micro-interaction: entrada em cascata */
+@keyframes cardEnter {
+    from { opacity: 0; transform: translateY(28px) scale(0.92); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
 .pokemon.entering {
     animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-@keyframes cardEnter {
-    from { opacity: 0; transform: translateY(30px) scale(0.9); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .card-header {
@@ -187,27 +422,29 @@ header h1 {
     margin-bottom: 15px;
 }
 
-.number {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-weight: 700;
-}
+.number { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; }
 
 .actions { display: flex; gap: 8px; }
 
 .shiny-toggle, .compare-btn {
     background: var(--surface-2);
     border: none;
-    padding: 10px;
+    padding: 9px;
     border-radius: 12px;
     cursor: pointer;
+    font-size: 0.95rem;
     transition: transform 0.2s ease, background 0.2s ease;
-    font-size: 1rem;
 }
 
 .shiny-toggle:hover, .compare-btn:hover {
     transform: scale(1.2);
     background: var(--border);
+}
+
+/* Bob animation na imagem do card */
+@keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-5px); }
 }
 
 .imgContainer {
@@ -218,26 +455,31 @@ header h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Micro-interaction: bob animation */
     animation: bob 3s ease-in-out infinite;
-}
-
-@keyframes bob {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
 }
 
 .imgContainer img {
     width: 90px;
     height: 90px;
-    image-rendering: pixelated;
-    transform: scale(1.6);
     transition: transform 0.3s ease;
 }
 
-.pokemon:hover .imgContainer img {
-    transform: scale(1.9);
+/* Gen 1-5: pixel art animado */
+.pixel-sprite {
+    image-rendering: pixelated;
+    transform: scale(1.6);
 }
+
+.pokemon:hover .pixel-sprite { transform: scale(1.9); }
+
+/* Gen 6+: official artwork HD */
+.hd-sprite {
+    image-rendering: auto;
+    transform: scale(1);
+    object-fit: contain;
+}
+
+.pokemon:hover .hd-sprite { transform: scale(1.12); }
 
 .name {
     font-family: 'Pokemon Solid', sans-serif;
@@ -250,41 +492,81 @@ header h1 {
 
 .type {
     display: inline-block;
-    padding: 6px 16px;
+    padding: 5px 14px;
     border-radius: 12px;
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .is-shiny {
     border-color: gold !important;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important;
+    box-shadow: 0 0 20px rgba(255,215,0,0.35) !important;
+}
+
+/* ─── Abilities no Card ──────────────────────────────────────────────────────── */
+.abilities-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
+.ability-tag {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    text-transform: capitalize;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+    transition: transform 0.15s ease;
+}
+
+.ability-tag:hover { transform: scale(1.06); }
+
+/* Hidden ability: destaque sutil */
+.ability-hidden {
+    background: #fff8e6;
+    color: #92400e;
+    border-color: #fbbf24;
+}
+
+[data-theme="dark"] .ability-hidden {
+    background: #2d2010;
+    color: #fbbf24;
+    border-color: #92400e;
 }
 
 /* ─── Skeleton ───────────────────────────────────────────────────────────────── */
 .skeleton {
     background: var(--surface);
-    height: 320px;
+    height: 340px;
+    border-radius: var(--radius);
     overflow: hidden;
     pointer-events: none;
-    border-radius: var(--radius);
     position: relative;
 }
 
 .skeleton::after {
     content: "";
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
     animation: wave 1.6s infinite;
 }
 
 @keyframes wave {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
 }
 
 /* ─── Results Text ───────────────────────────────────────────────────────────── */
@@ -299,119 +581,121 @@ header h1 {
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
     inset: 0;
-    background: rgba(15, 23, 42, 0.85);
+    z-index: 1000;
+    background: rgba(10, 20, 40, 0.75);
     backdrop-filter: blur(8px);
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
-.modal.active {
+.modal.open {
     display: flex;
-    animation: modalIn 0.3s ease;
+    animation: fadeIn 0.25s ease;
 }
 
-@keyframes modalIn {
+@keyframes fadeIn {
     from { opacity: 0; }
-    to { opacity: 1; }
+    to   { opacity: 1; }
 }
 
 .modal-content {
     background: var(--surface);
-    width: 95%;
-    max-width: 560px;
-    max-height: 90vh;
+    width: 100%;
+    max-width: 540px;
+    max-height: 88vh;
     overflow-y: auto;
-    padding: 40px;
-    border-radius: 30px;
+    padding: 36px;
+    border-radius: 28px;
     position: relative;
     text-align: center;
-    animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes modalSlideIn {
-    from { transform: translateY(40px) scale(0.95); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+@keyframes slideUp {
+    from { transform: translateY(40px) scale(0.94); opacity: 0; }
+    to   { transform: translateY(0)    scale(1);    opacity: 1; }
 }
 
 .close {
     position: absolute;
-    right: 25px;
-    top: 15px;
-    font-size: 30px;
+    right: 20px;
+    top: 16px;
+    background: var(--surface-2);
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
     cursor: pointer;
     color: var(--text-muted);
-    transition: color 0.2s, transform 0.2s;
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.close:hover {
-    color: var(--text);
-    transform: rotate(90deg);
-}
+.close:hover { transform: rotate(90deg); color: var(--text); }
 
 /* ─── Modal Header ───────────────────────────────────────────────────────────── */
-.modal-header {
-    margin-bottom: 20px;
+.modal-header { margin-bottom: 20px; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
 }
 
 .modal-header img {
-    width: 160px;
-    height: 160px;
+    width: 150px;
+    height: 150px;
     object-fit: contain;
-    /* Micro-interaction: float */
     animation: float 4s ease-in-out infinite;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.12));
 }
 
 .modal-header h2 {
     font-family: 'Pokemon Solid', sans-serif;
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     letter-spacing: 3px;
     color: var(--text);
     text-transform: capitalize;
-    margin: 8px 0;
-}
-
-.modal-header .modal-types {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-bottom: 5px;
+    margin: 8px 0 6px;
 }
 
 .modal-header .modal-id {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.modal-types {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
 }
 
 /* ─── Modal Tabs ─────────────────────────────────────────────────────────────── */
 .modal-tabs {
     display: flex;
-    gap: 0;
     border-bottom: 2px solid var(--border);
-    margin-bottom: 25px;
+    margin-bottom: 24px;
 }
 
 .modal-tab-btn {
+    flex: 1;
     background: none;
     border: none;
-    padding: 12px 20px;
+    padding: 12px 8px;
     cursor: pointer;
     font-weight: 700;
     color: var(--text-muted);
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     position: relative;
     transition: color 0.2s ease;
-    flex: 1;
 }
 
 .modal-tab-btn::after {
@@ -422,47 +706,47 @@ header h1 {
     height: 2px;
     background: var(--accent);
     transform: scaleX(0);
-    transition: transform 0.3s ease;
+    transition: transform 0.25s ease;
 }
 
-.modal-tab-btn:hover { color: var(--accent); }
+.modal-tab-btn:hover  { color: var(--accent); }
 .modal-tab-btn.active { color: var(--accent); }
 .modal-tab-btn.active::after { transform: scaleX(1); }
 
 .modal-tab-pane { display: none; }
+
 .modal-tab-pane.active {
     display: block;
-    animation: tabIn 0.3s ease;
+    animation: tabIn 0.25s ease;
 }
 
 @keyframes tabIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ─── Stats ──────────────────────────────────────────────────────────────────── */
 .stats-section {
     text-align: left;
     max-width: 380px;
-    margin: 0 auto 25px;
+    margin: 0 auto 20px;
 }
 
 .stats-section h4 {
     color: var(--text-muted);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    font-weight: 800;
 }
 
-.stat-row {
-    margin-bottom: 10px;
-}
+.stat-row { margin-bottom: 10px; }
 
 .stat-label-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 800;
     margin-bottom: 4px;
     color: var(--text);
@@ -475,42 +759,39 @@ header h1 {
     overflow: hidden;
 }
 
+@keyframes barGrow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+
 .stat-bar-fill {
     height: 100%;
     border-radius: 3px;
     background: linear-gradient(90deg, var(--accent), #7c86e0);
     transform-origin: left;
-    animation: barGrow 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-@keyframes barGrow {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
+    animation: barGrow 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .type-matchup-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 14px;
     text-align: left;
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .matchup-section h4 {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    font-weight: 800;
 }
 
 .matchup-section.strong h4 { color: #059669; }
-.matchup-section.weak h4 { color: #dc2626; }
+.matchup-section.weak   h4 { color: #dc2626; }
 
-.type-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-}
+.type-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 
 /* ─── Evolution Chain ────────────────────────────────────────────────────────── */
 .evolution-chain {
@@ -518,19 +799,22 @@ header h1 {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 8px;
-    padding: 16px 0;
+    gap: 6px;
+    padding: 12px 0;
 }
 
 .evo-step {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     cursor: pointer;
     padding: 12px;
     border-radius: 16px;
-    transition: background 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 2px solid transparent;
+    transition: background 0.2s ease,
+                transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 0.2s ease;
 }
 
 .evo-step:hover {
@@ -540,123 +824,123 @@ header h1 {
 
 .evo-step.current-pokemon {
     background: var(--surface-2);
-    border: 2px solid var(--accent);
+    border-color: var(--accent);
 }
 
 .evo-step img {
-    width: 80px;
-    height: 80px;
+    width: 76px;
+    height: 76px;
     object-fit: contain;
     image-rendering: pixelated;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
 }
 
-.evo-step .evo-name {
-    font-size: 0.75rem;
+.evo-name {
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: capitalize;
     color: var(--text);
 }
 
-.evo-step .evo-id {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-}
+.evo-id { font-size: 0.6rem; color: var(--text-muted); }
 
 .evo-arrow {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
     color: var(--text-muted);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
 }
 
 .evo-trigger {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     color: var(--text-muted);
     text-align: center;
-    max-width: 70px;
-    font-weight: 600;
+    max-width: 64px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
-.evo-loading, .evo-error, .evo-empty {
+.evo-loading {
     text-align: center;
-    padding: 30px;
+    padding: 24px;
     color: var(--text-muted);
-    font-style: italic;
+    font-size: 0.85rem;
 }
 
 .evo-loading::after {
     content: '';
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border: 3px solid var(--border);
     border-top-color: var(--accent);
     border-radius: 50%;
-    margin: 12px auto 0;
+    margin: 10px auto 0;
     animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.evo-empty, .no-data-message {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 28px;
+    font-size: 0.85rem;
+    font-style: italic;
 }
 
 /* ─── Moves Table ────────────────────────────────────────────────────────────── */
 #movesContainer {
-    max-height: 380px;
+    max-height: 360px;
     overflow-y: auto;
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 .moves-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
 }
 
 .moves-table thead {
     position: sticky;
     top: 0;
     background: var(--surface);
-    z-index: 10;
+    z-index: 1;
 }
 
 .moves-table th {
-    padding: 12px 8px;
+    padding: 10px 8px;
     border-bottom: 2px solid var(--border);
     font-weight: 800;
     color: var(--text-muted);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     text-align: left;
 }
 
 .moves-table td {
-    padding: 10px 8px;
+    padding: 9px 8px;
     border-bottom: 1px solid var(--border);
     color: var(--text);
 }
 
-.moves-table tbody tr {
-    transition: background 0.15s ease;
-}
-
-.moves-table tbody tr:hover {
-    background: var(--surface-2);
-}
+.moves-table tbody tr { transition: background 0.15s ease; }
+.moves-table tbody tr:hover { background: var(--surface-2); }
 
 .move-level {
-    background: linear-gradient(135deg, var(--accent), #5b6dd9);
+    background: linear-gradient(135deg, var(--accent), #5b6ee0);
     color: white;
-    padding: 5px 10px;
+    padding: 4px 9px;
     border-radius: 8px;
     font-weight: 800;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     display: inline-block;
-    min-width: 36px;
+    min-width: 34px;
     text-align: center;
 }
 
@@ -664,11 +948,4 @@ header h1 {
     text-transform: capitalize;
     font-weight: 600;
     padding-left: 8px;
-}
-
-.no-data-message {
-    text-align: center;
-    color: var(--text-muted);
-    padding: 30px;
-    font-style: italic;
 }

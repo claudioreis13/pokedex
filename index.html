@@ -10,66 +10,95 @@
 </head>
 <body>
 
-    <header>
-        <div class="header-top">
-            <h1>Poké<span>dex</span></h1>
-            <button class="dark-toggle" id="darkToggle" aria-label="Alternar tema">
-                <span class="toggle-icon">🌙</span>
-            </button>
+    <!-- ─── SPLASH SCREEN ──────────────────────────────────────────────────── -->
+    <div id="splash">
+        <div class="splash-inner">
+
+            <!-- Pokébola SVG animada -->
+            <div class="pokeball-wrap">
+                <svg class="pokeball" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- metade de baixo -->
+                    <path d="M 5,50 A 45,45 0 0,0 95,50 Z" fill="white"/>
+                    <!-- metade de cima -->
+                    <path d="M 5,50 A 45,45 0 0,1 95,50 Z" fill="#e74c3c"/>
+                    <!-- anel externo -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#2d3436" stroke-width="5"/>
+                    <!-- faixa central -->
+                    <line x1="5" y1="50" x2="95" y2="50" stroke="#2d3436" stroke-width="5"/>
+                    <!-- botão externo -->
+                    <circle cx="50" cy="50" r="12" fill="white" stroke="#2d3436" stroke-width="5"/>
+                    <!-- botão interno -->
+                    <circle cx="50" cy="50" r="5" fill="white" class="splash-btn-inner"/>
+                </svg>
+            </div>
+
+            <!-- Título -->
+            <h1 class="splash-title">Pokédex</h1>
+
+            <!-- Barra de progresso -->
+            <div class="splash-progress-wrap">
+                <div class="splash-progress-bar" id="splashProgress"></div>
+            </div>
+            <p class="splash-msg" id="splashMsg">Iniciando Pokédex...</p>
+
         </div>
+    </div>
+    <!-- ─────────────────────────────────────────────────────────────────────── -->
+
+    <header>
+        <h1>Poké<span>dex</span></h1>
         <p class="header-sub">Explore as 4 regiões clássicas com tecnologia animada</p>
+        <button class="dark-toggle" id="darkToggle" aria-label="Alternar tema">
+            <span class="toggle-icon">🌙</span>
+        </button>
     </header>
 
-    <div class="filterPanel">
-        <div class="filterGroup">
-            <label for="regionSelect">Região</label>
-            <select id="regionSelect">
-                <option value="all">Todas (Gen 1-4)</option>
-                <option value="kanto">Kanto (Gen 1)</option>
-                <option value="johto">Johto (Gen 2)</option>
-                <option value="hoenn">Hoenn (Gen 3)</option>
-                <option value="sinnoh">Sinnoh (Gen 4)</option>
-            </select>
+    <div class="filter-bar">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar pokémon por nome ou número...">
+            <button class="search-clear" id="searchClear" aria-label="Limpar busca">×</button>
         </div>
-        <div class="filterGroup">
-            <label for="searchInput">Busca</label>
-            <input type="text" id="searchInput" placeholder="Nome ou ID...">
+
+        <div class="filter-controls">
+            <div class="filter-chip-group" id="regionTabs">
+                <button class="region-chip active" data-region="all">Todas</button>
+                <button class="region-chip kanto"  data-region="kanto">Kanto</button>
+                <button class="region-chip johto"  data-region="johto">Johto</button>
+                <button class="region-chip hoenn"  data-region="hoenn">Hoenn</button>
+                <button class="region-chip sinnoh" data-region="sinnoh">Sinnoh</button>
+                <button class="region-chip unova"  data-region="unova">Unova</button>
+                <button class="region-chip kalos"  data-region="kalos">Kalos</button>
+            </div>
+            <div class="sort-wrapper">
+                <span class="sort-icon">↕</span>
+                <select id="sortSelect" class="sort-select">
+                    <option value="id">Nº Pokédex</option>
+                    <option value="name">Nome A–Z</option>
+                </select>
+            </div>
         </div>
-        <div class="filterGroup">
-            <label for="sortSelect">Ordenar</label>
-            <select id="sortSelect">
-                <option value="id">Nº Pokédex</option>
-                <option value="name">Nome</option>
-            </select>
+
+        <div class="filter-footer">
+            <span id="resultsText" class="results-count">Carregando...</span>
+            <button class="clear-filters" id="clearFilters" style="display:none">Limpar filtros ×</button>
         </div>
     </div>
 
-    <div id="resultsText" class="resultsText">Carregando Pokédex...</div>
     <main id="pokeContainer" class="pokeContainer"></main>
 
     <div id="modal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="UI.closeModal()">&times;</span>
-
+            <button class="close" onclick="UI.closeModal()">&times;</button>
             <div id="modalHeader" class="modal-header"></div>
-
             <div class="modal-tabs">
-                <button class="modal-tab-btn active" data-tab="stats" onclick="UI.switchModalTab('stats')">Status</button>
-                <button class="modal-tab-btn" data-tab="evolution" onclick="UI.switchModalTab('evolution')">Evolução</button>
-                <button class="modal-tab-btn" data-tab="moves" onclick="UI.switchModalTab('moves')">Ataques</button>
+                <button class="modal-tab-btn active" data-tab="stats"     onclick="UI.switchModalTab('stats')">Status</button>
+                <button class="modal-tab-btn"        data-tab="evolution" onclick="UI.switchModalTab('evolution')">Evolução</button>
+                <button class="modal-tab-btn"        data-tab="moves"     onclick="UI.switchModalTab('moves')">Ataques</button>
             </div>
-
-            <div id="tab-stats" class="modal-tab-pane active">
-                <div id="modalBody"></div>
-            </div>
-
-            <div id="tab-evolution" class="modal-tab-pane">
-                <div id="evolutionContainer"></div>
-            </div>
-
-            <div id="tab-moves" class="modal-tab-pane">
-                <div id="movesContainer"></div>
-            </div>
+            <div id="tab-stats"     class="modal-tab-pane active"><div id="modalBody"></div></div>
+            <div id="tab-evolution" class="modal-tab-pane"><div id="evolutionContainer"></div></div>
+            <div id="tab-moves"     class="modal-tab-pane"><div id="movesContainer"></div></div>
         </div>
     </div>
 
