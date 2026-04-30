@@ -792,3 +792,123 @@ new IntersectionObserver(
 
 // Primeira carga
 ensureRegionData();
+// ─── MUSIC PLAYER ─────────────────────────────────────────────────────────────
+
+const PLAYLIST = [
+    // Kanto (FireRed/LeafGreen - GBA) — URLs com pasta Disc 1 confirmadas
+    { title: 'Pallet Town',          url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/04%20-%20Pallet%20Town.mp3' },
+    { title: 'Route 1',              url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/12%20-%20Route%201.mp3' },
+    { title: 'Pewter City',          url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/15%20-%20Pewter%20City.mp3' },
+    { title: 'Pokémon Center',  url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/16%20-%20Pok%C3%A9mon%20Center.mp3' },
+    { title: 'Viridian Forest',      url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/19%20-%20Viridian%20Forest.mp3' },
+    { title: 'Cerulean City',        url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/31%20-%20Cerulean%20City.mp3' },
+    { title: 'Lavender Town',        url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/39%20-%20Lavender%20Town.mp3' },
+    { title: 'Celadon City',         url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/41%20-%20Celadon%20City.mp3' },
+    { title: 'Surf',                 url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/51%20-%20Surf.mp3' },
+    { title: 'Battle! (Trainer)',    url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/09%20-%20Battle%21%20%28Trainer%29%20.mp3' },
+    { title: 'Battle! (Gym Leader)', url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/25%20-%20Battle%21%20%28Gym%20Leader%29.mp3' },
+    { title: 'Pokémon Gym',     url: 'https://archive.org/download/pkmn-frlg-soundtrack/Disc%201/23%20-%20Pok%C3%A9mon%20Gym.mp3' },
+    // Johto (Gold/Silver)
+    { title: 'New Bark Town',        url: 'https://archive.org/download/pkmn-gsc-soundtrack/04%20New%20Bark%20Town.mp3' },
+    { title: 'Route 29',             url: 'https://archive.org/download/pkmn-gsc-soundtrack/05%20Route%2029.mp3' },
+    { title: 'Goldenrod City',       url: 'https://archive.org/download/pkmn-gsc-soundtrack/16%20Goldenrod%20City.mp3' },
+    // Hoenn (Ruby/Sapphire)
+    { title: 'Littleroot Town',      url: 'https://archive.org/download/pkmn-rse-soundtrack/04%20Littleroot%20Town.mp3' },
+    { title: 'Route 101',            url: 'https://archive.org/download/pkmn-rse-soundtrack/05%20Route%20101.mp3' },
+    { title: 'Petalburg City',       url: 'https://archive.org/download/pkmn-rse-soundtrack/06%20Petalburg%20City.mp3' },
+    // Sinnoh (Diamond/Pearl)
+    { title: 'Twinleaf Town',        url: 'https://archive.org/download/pkmn-dppt-soundtrack/04%20Twinleaf%20Town.mp3' },
+    { title: 'Route 201',            url: 'https://archive.org/download/pkmn-dppt-soundtrack/05%20Route%20201%20%28Day%29.mp3' },
+    { title: 'Jubilife City',        url: 'https://archive.org/download/pkmn-dppt-soundtrack/07%20Jubilife%20City.mp3' },
+];
+
+const MusicPlayer = {
+    audio:   new Audio(),
+    index:   0,
+    isMuted: false,
+
+    init() {
+        this.audio.volume = 0.30;
+        this.audio.loop   = false;
+        this.audio.addEventListener('ended', () => this.next());
+        this.audio.addEventListener('error', () => {
+            console.warn('Erro ao carregar música, pulando...');
+            setTimeout(() => this.next(), 1000);
+        });
+
+        // Controles
+        document.getElementById('musicPlay')?.addEventListener('click', () => this.togglePlay());
+        document.getElementById('musicPrev')?.addEventListener('click', () => this.prev());
+        document.getElementById('musicNext')?.addEventListener('click', () => this.next());
+        document.getElementById('musicMute')?.addEventListener('click', () => this.toggleMute());
+        document.getElementById('musicVolume')?.addEventListener('input', (e) => {
+            this.audio.volume = e.target.value / 100;
+            if (this.isMuted) this.toggleMute(); // desmuta ao ajustar volume
+        });
+
+        // Começa a tocar ao iniciar (assim que splash aparecer)
+        this.load(0);
+        this.play();
+    },
+
+    load(idx) {
+        this.index = (idx + PLAYLIST.length) % PLAYLIST.length;
+        const track = PLAYLIST[this.index];
+        this.audio.src = track.url;
+        const titleEl = document.getElementById('musicTitle');
+        if (titleEl) titleEl.textContent = track.title;
+    },
+
+    play() {
+        this.audio.play().then(() => {
+            // Tocou com sucesso
+            const btn = document.getElementById('musicPlay');
+            if (btn) btn.textContent = '⏸';
+        }).catch(() => {
+            // Bloqueado pelo browser — mostra ▶ e aguarda primeiro clique em qualquer lugar
+            const btn = document.getElementById('musicPlay');
+            if (btn) btn.textContent = '▶';
+
+            const startOnInteraction = () => {
+                this.audio.play().then(() => {
+                    if (btn) btn.textContent = '⏸';
+                }).catch(() => {});
+            };
+
+            document.addEventListener('click', startOnInteraction, { once: true });
+            document.addEventListener('keydown', startOnInteraction, { once: true });
+        });
+    },
+
+    pause() {
+        this.audio.pause();
+        const btn = document.getElementById('musicPlay');
+        if (btn) btn.textContent = '▶';
+    },
+
+    togglePlay() {
+        this.audio.paused ? this.play() : this.pause();
+    },
+
+    prev() {
+        this.load(this.index - 1);
+        this.play();
+    },
+
+    next() {
+        this.load(this.index + 1);
+        this.play();
+    },
+
+    toggleMute() {
+        this.isMuted = !this.isMuted;
+        this.audio.muted = this.isMuted;
+        const btn = document.getElementById('musicMute');
+        const player = document.getElementById('musicPlayer');
+        if (btn) btn.textContent = this.isMuted ? '🔇' : '🔊';
+        if (player) player.classList.toggle('muted', this.isMuted);
+    },
+};
+
+// Inicia o player junto com o resto da app
+MusicPlayer.init();
