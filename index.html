@@ -10,110 +10,97 @@
 </head>
 <body>
 
-    <!-- ─── SPLASH SCREEN ──────────────────────────────────────────────────── -->
-    <div id="splash">
-        <div class="splash-inner">
+    <a href="#pokeContainer" class="skip-link">Ir para o conteúdo</a>
 
-            <!-- Pokébola SVG animada -->
-            <div class="pokeball-wrap">
+    <div id="splash" role="status" aria-label="Carregando Pokédex">
+        <div class="splash-inner">
+            <div class="pokeball-wrap" aria-hidden="true">
                 <svg class="pokeball" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- metade de baixo -->
                     <path d="M 5,50 A 45,45 0 0,0 95,50 Z" fill="white"/>
-                    <!-- metade de cima -->
                     <path d="M 5,50 A 45,45 0 0,1 95,50 Z" fill="#e74c3c"/>
-                    <!-- anel externo -->
                     <circle cx="50" cy="50" r="45" fill="none" stroke="#2d3436" stroke-width="5"/>
-                    <!-- faixa central -->
                     <line x1="5" y1="50" x2="95" y2="50" stroke="#2d3436" stroke-width="5"/>
-                    <!-- botão externo -->
                     <circle cx="50" cy="50" r="12" fill="white" stroke="#2d3436" stroke-width="5"/>
-                    <!-- botão interno -->
                     <circle cx="50" cy="50" r="5" fill="white" class="splash-btn-inner"/>
                 </svg>
             </div>
-
-            <!-- Título -->
-            <h1 class="splash-title">Pokédex</h1>
-
-            <!-- Barra de progresso -->
-            <div class="splash-progress-wrap">
+            <h1 class="splash-title" aria-hidden="true">Pokédex</h1>
+            <div class="splash-progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="splashProgressBar">
                 <div class="splash-progress-bar" id="splashProgress"></div>
             </div>
-            <p class="splash-msg" id="splashMsg">Iniciando Pokédex...</p>
-
+            <p class="splash-msg" id="splashMsg" aria-live="polite">Iniciando Pokédex...</p>
         </div>
     </div>
-    <!-- ─────────────────────────────────────────────────────────────────────── -->
 
-    <header>
+    <header role="banner">
         <h1>Poké<span>dex</span></h1>
-        <p class="header-sub">Explore as 4 regiões clássicas com tecnologia animada</p>
-        <button class="dark-toggle" id="darkToggle" aria-label="Alternar tema">
-            <span class="toggle-icon">🌙</span>
+        <p class="header-sub">Explore as regiões clássicas com tecnologia animada</p>
+        <button class="dark-toggle" id="darkToggle" aria-label="Alternar tema escuro">
+            <span class="toggle-icon" aria-hidden="true">🌙</span>
         </button>
     </header>
 
-    <div class="filter-bar">
+    <div class="filter-bar" role="search" aria-label="Filtros da Pokédex">
         <div class="search-wrapper">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" class="search-input" placeholder="Buscar pokémon por nome ou número...">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input type="text" id="searchInput" class="search-input"
+                   placeholder="Buscar pokémon por nome ou número..."
+                   aria-label="Buscar pokémon"
+                   autocomplete="off" spellcheck="false">
             <button class="search-clear" id="searchClear" aria-label="Limpar busca">×</button>
         </div>
-
         <div class="filter-controls">
-            <div class="filter-chip-group" id="regionTabs">
-                <button class="region-chip active" data-region="all">Todas</button>
-                <button class="region-chip kanto"  data-region="kanto">Kanto</button>
-                <button class="region-chip johto"  data-region="johto">Johto</button>
-                <button class="region-chip hoenn"  data-region="hoenn">Hoenn</button>
-                <button class="region-chip sinnoh" data-region="sinnoh">Sinnoh</button>
-                <button class="region-chip unova"  data-region="unova">Unova</button>
-                <button class="region-chip kalos"  data-region="kalos">Kalos</button>
+            <div class="filter-chip-group" id="regionTabs" role="group" aria-label="Filtrar por região">
+                <button class="region-chip active" data-region="all"    aria-pressed="true">Todas</button>
+                <button class="region-chip kanto"  data-region="kanto"  aria-pressed="false">Kanto</button>
+                <button class="region-chip johto"  data-region="johto"  aria-pressed="false">Johto</button>
+                <button class="region-chip hoenn"  data-region="hoenn"  aria-pressed="false">Hoenn</button>
+                <button class="region-chip sinnoh" data-region="sinnoh" aria-pressed="false">Sinnoh</button>
+                <button class="region-chip unova"  data-region="unova"  aria-pressed="false">Unova</button>
+                <button class="region-chip kalos"  data-region="kalos"  aria-pressed="false">Kalos</button>
             </div>
             <div class="sort-wrapper">
-                <span class="sort-icon">↕</span>
-                <select id="sortSelect" class="sort-select">
+                <span class="sort-icon" aria-hidden="true">↕</span>
+                <select id="sortSelect" class="sort-select" aria-label="Ordenar pokémons">
                     <option value="id">Nº Pokédex</option>
                     <option value="name">Nome A–Z</option>
                 </select>
             </div>
         </div>
-
         <div class="filter-footer">
-            <span id="resultsText" class="results-count">Carregando...</span>
-            <button class="clear-filters" id="clearFilters" style="display:none">Limpar filtros ×</button>
+            <span id="resultsText" class="results-count" aria-live="polite" aria-atomic="true">Carregando...</span>
+            <button class="clear-filters" id="clearFilters" style="display:none" aria-label="Limpar todos os filtros">Limpar filtros ×</button>
         </div>
     </div>
 
-    <main id="pokeContainer" class="pokeContainer"></main>
+    <main id="pokeContainer" class="pokeContainer" aria-label="Lista de Pokémons"></main>
 
-    <div id="modal" class="modal">
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalPokemonName" aria-hidden="true">
         <div class="modal-content">
-            <button class="close" onclick="UI.closeModal()">&times;</button>
+            <button class="close" id="modalClose" aria-label="Fechar modal">&times;</button>
             <div id="modalHeader" class="modal-header"></div>
-            <div class="modal-tabs">
-                <button class="modal-tab-btn active" data-tab="stats"     onclick="UI.switchModalTab('stats')">Status</button>
-                <button class="modal-tab-btn"        data-tab="evolution" onclick="UI.switchModalTab('evolution')">Evolução</button>
-                <button class="modal-tab-btn"        data-tab="moves"     onclick="UI.switchModalTab('moves')">Ataques</button>
+            <div class="modal-tabs" role="tablist" aria-label="Informações do pokémon">
+                <button class="modal-tab-btn active" data-tab="stats"     role="tab" aria-selected="true"  aria-controls="tab-stats"     onclick="UI.switchModalTab('stats')">Status</button>
+                <button class="modal-tab-btn"        data-tab="evolution" role="tab" aria-selected="false" aria-controls="tab-evolution" onclick="UI.switchModalTab('evolution')">Evolução</button>
+                <button class="modal-tab-btn"        data-tab="moves"     role="tab" aria-selected="false" aria-controls="tab-moves"     onclick="UI.switchModalTab('moves')">Ataques</button>
             </div>
-            <div id="tab-stats"     class="modal-tab-pane active"><div id="modalBody"></div></div>
-            <div id="tab-evolution" class="modal-tab-pane"><div id="evolutionContainer"></div></div>
-            <div id="tab-moves"     class="modal-tab-pane"><div id="movesContainer"></div></div>
+            <div id="tab-stats"     class="modal-tab-pane active" role="tabpanel" tabindex="0"><div id="modalBody"></div></div>
+            <div id="tab-evolution" class="modal-tab-pane"        role="tabpanel" tabindex="0"><div id="evolutionContainer"></div></div>
+            <div id="tab-moves"     class="modal-tab-pane"        role="tabpanel" tabindex="0"><div id="movesContainer"></div></div>
         </div>
     </div>
 
-    <!-- ─── MUSIC PLAYER ────────────────────────────────────────────────────── -->
-    <div class="music-player" id="musicPlayer">
+    <div class="music-player" id="musicPlayer" role="region" aria-label="Player de música">
         <div class="music-info">
-            <span class="music-note">♪</span>
-            <span class="music-title" id="musicTitle">Pallet Town</span>
+            <span class="music-note" aria-hidden="true">♪</span>
+            <span class="music-title" id="musicTitle" aria-live="polite">Pallet Town</span>
         </div>
         <div class="music-controls">
-            <button class="music-btn" id="musicPrev" title="Anterior">⏮</button>
-            <button class="music-btn music-play" id="musicPlay" title="Play/Pause">⏸</button>
-            <button class="music-btn" id="musicNext" title="Próxima">⏭</button>
-            <button class="music-btn" id="musicMute" title="Mudo">🔊</button>
-            <input type="range" class="music-volume" id="musicVolume" min="0" max="100" value="30">
+            <button class="music-btn" id="musicPrev" aria-label="Música anterior">⏮</button>
+            <button class="music-btn music-play" id="musicPlay" aria-label="Pausar música">⏸</button>
+            <button class="music-btn" id="musicNext" aria-label="Próxima música">⏭</button>
+            <button class="music-btn" id="musicMute" aria-label="Silenciar música">🔊</button>
+            <input type="range" class="music-volume" id="musicVolume" min="0" max="100" value="30" aria-label="Volume da música">
         </div>
     </div>
 

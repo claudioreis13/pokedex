@@ -354,8 +354,24 @@ const UI = {
             };
         }
 
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Ver detalhes de ${p.name}`);
+
         card.onclick = (e) => {
-            if (!e.target.closest('button')) this.openDetails(p);
+            if (!e.target.closest('button')) {
+                state.lastFocusedCard = card;
+                this.openDetails(p);
+            }
+        };
+
+        // Suporte a teclado: Enter e Espaço abrem o modal
+        card.onkeydown = (e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('button')) {
+                e.preventDefault();
+                state.lastFocusedCard = card;
+                this.openDetails(p);
+            }
         };
 
         target.appendChild(card);
@@ -587,19 +603,35 @@ const UI = {
 
     switchModalTab(name) {
         document.querySelectorAll('.modal-tab-pane').forEach((p) => p.classList.remove('active'));
-        document.querySelectorAll('.modal-tab-btn').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('.modal-tab-btn').forEach((b) => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
         document.getElementById(`tab-${name}`)?.classList.add('active');
-        document.querySelector(`[data-tab="${name}"]`)?.classList.add('active');
+        const activeBtn = document.querySelector(`[data-tab="${name}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.setAttribute('aria-selected', 'true');
+        }
     },
 
     openModal() {
         this.modal?.classList.add('open');
+        this.modal?.removeAttribute('aria-hidden');
+        // Foco vai para o botão fechar ao abrir
+        setTimeout(() => document.getElementById('modalClose')?.focus(), 50);
+        // Ativa focus trap
+        this._trapFocus();
+        // Impede scroll do body
+        document.body.style.overflow = 'hidden';
     },
 
     closeModal() {
         this.modal?.classList.remove('open');
+        this.modal?.setAttribute('aria-hidden', 'true');
         state.compareSelection = [];
         stopPokemonCry();
+        document.body.style.overflow = '';
 
         if (state.chartInstance) {
             state.chartInstance.destroy();
@@ -608,6 +640,48 @@ const UI = {
 
         const tabs = document.querySelector('.modal-tabs');
         if (tabs) tabs.style.visibility = '';
+
+        // Remove focus trap
+        if (this._trapHandler) {
+            document.removeEventListener('keydown', this._trapHandler);
+            this._trapHandler = null;
+        }
+
+        // Devolve foco ao card que abriu o modal
+        state.lastFocusedCard?.focus();
+    },
+
+    _trapFocus() {
+        const modal = this.modal;
+        if (!modal) return;
+
+        const focusable = 'button, [href], input, select, [tabindex]:not([tabindex="-1"])';
+
+        this._trapHandler = (e) => {
+            if (e.key !== 'Tab') return;
+
+            const elements = [...modal.querySelectorAll(focusable)].filter(
+                el => !el.disabled && el.offsetParent !== null
+            );
+            if (!elements.length) return;
+
+            const first = elements[0];
+            const last  = elements[elements.length - 1];
+
+            if (e.shiftKey) {
+                if (document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            } else {
+                if (document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        };
+
+        document.addEventListener('keydown', this._trapHandler);
     },
 
     resetCompare() {
@@ -736,8 +810,12 @@ document.getElementById('regionTabs')?.addEventListener('click', (e) => {
     const chip = e.target.closest('.region-chip');
     if (!chip) return;
 
-    document.querySelectorAll('.region-chip').forEach((c) => c.classList.remove('active'));
+    document.querySelectorAll('.region-chip').forEach((c) => {
+        c.classList.remove('active');
+        c.setAttribute('aria-pressed', 'false');
+    });
     chip.classList.add('active');
+    chip.setAttribute('aria-pressed', 'true');
 
     state.currentRegion = chip.dataset.region;
     UI.container.innerHTML = '';
@@ -778,7 +856,18 @@ UI.modal?.addEventListener('click', (e) => {
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') UI.closeModal();
+
+    // Navegação por setas nas abas do modal
+    if (e.target.matches('.modal-tab-btn')) {
+        const tabs = [...document.querySelectorAll('.modal-tab-btn')];
+        const idx  = tabs.indexOf(e.target);
+        if (e.key === 'ArrowRight') { e.preventDefault(); tabs[(idx + 1) % tabs.length].focus(); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); tabs[(idx - 1 + tabs.length) % tabs.length].focus(); }
+    }
 });
+
+// Botão fechar via click (HTML usa id ao invés de onclick inline)
+document.getElementById('modalClose')?.addEventListener('click', () => UI.closeModal());
 
 // Infinite scroll
 new IntersectionObserver(
