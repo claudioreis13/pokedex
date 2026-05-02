@@ -260,13 +260,27 @@ header h1 {
     flex-wrap: wrap;
 }
 
-/* Region chips */
+/* Nova estrutura: regiões scrolláveis + sort fixo */
+.filter-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+}
+
+/* Region chips - scrollável horizontalmente */
 .filter-chip-group {
     display: flex;
     gap: 8px;
-    flex-wrap: wrap;
     flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
 }
+
+.filter-chip-group::-webkit-scrollbar { display: none; }
 
 .region-chip {
     padding: 8px 16px;
@@ -278,14 +292,16 @@ header h1 {
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
-    transition: all 0.2s ease;
+    flex-shrink: 0;
     white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .region-chip:hover {
     border-color: var(--accent);
     color: var(--accent);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59,76,202,0.15);
 }
 
 .region-chip.active {
@@ -316,6 +332,19 @@ header h1 {
 }
 
 .sort-wrapper:focus-within { border-color: var(--accent); }
+
+/* Nova versão para estar ao lado das regiões */
+.sort-wrapper-mobile {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 12px;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease;
+}
 
 .sort-icon {
     color: var(--text-muted);
@@ -1176,14 +1205,19 @@ header h1 {
     }
 
     .filter-controls {
-        flex-direction: column;
-        align-items: stretch;
+        display: none;
+    }
+
+    /* Nova estrutura mobile: regiões + sort em uma linha */
+    .filter-controls-row {
+        display: flex;
+        align-items: center;
         gap: 10px;
+        overflow: hidden;
     }
 
     .filter-chip-group {
         gap: 6px;
-        justify-content: flex-start;
         overflow-x: auto;
         flex-wrap: nowrap;
         padding-bottom: 4px;
@@ -1199,7 +1233,11 @@ header h1 {
         font-size: 0.75rem;
     }
 
-    .sort-wrapper { align-self: flex-end; }
+    .sort-wrapper-mobile {
+        display: flex;
+    }
+
+    .sort-wrapper-mobile:focus-within { border-color: var(--accent); }
 
     /* Grid de cards: 2 colunas em mobile */
     .pokeContainer {

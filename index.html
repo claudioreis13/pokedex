@@ -41,6 +41,7 @@
     </header>
 
     <div class="filter-bar" role="search" aria-label="Filtros da Pokédex">
+        <!-- Busca -->
         <div class="search-wrapper">
             <span class="search-icon" aria-hidden="true">🔍</span>
             <input type="text" id="searchInput" class="search-input"
@@ -49,7 +50,9 @@
                    autocomplete="off" spellcheck="false">
             <button class="search-clear" id="searchClear" aria-label="Limpar busca">×</button>
         </div>
-        <div class="filter-controls">
+
+        <!-- Regiões + Sort em uma linha (scrollável em mobile) -->
+        <div class="filter-controls-row">
             <div class="filter-chip-group" id="regionTabs" role="group" aria-label="Filtrar por região">
                 <button class="region-chip active" data-region="all"    aria-pressed="true">Todas</button>
                 <button class="region-chip kanto"  data-region="kanto"  aria-pressed="false">Kanto</button>
@@ -59,7 +62,7 @@
                 <button class="region-chip unova"  data-region="unova"  aria-pressed="false">Unova</button>
                 <button class="region-chip kalos"  data-region="kalos"  aria-pressed="false">Kalos</button>
             </div>
-            <div class="sort-wrapper">
+            <div class="sort-wrapper-mobile">
                 <span class="sort-icon" aria-hidden="true">↕</span>
                 <select id="sortSelect" class="sort-select" aria-label="Ordenar pokémons">
                     <option value="id">Nº Pokédex</option>
@@ -67,6 +70,8 @@
                 </select>
             </div>
         </div>
+
+        <!-- Contador e botão limpar -->
         <div class="filter-footer">
             <span id="resultsText" class="results-count" aria-live="polite" aria-atomic="true">Carregando...</span>
             <button class="clear-filters" id="clearFilters" style="display:none" aria-label="Limpar todos os filtros">Limpar filtros ×</button>
